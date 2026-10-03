@@ -1,0 +1,9 @@
+[project]
+name = "reclone-overhangs"
+version = "0.1.0"
+description = "Partes de ADN y ensamblajes Golden Gate (sintaxis Reclone) sobre PostgreSQL"
+requires-python = ">=3.10"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]

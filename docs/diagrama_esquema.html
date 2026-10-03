@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Esquema BD Reclone</title>
+<style>
+  :root {
+    --bg: #faf9f5; --fg: #3d3d3a; --muted: #73726c; --line: #73726c;
+    --head-bg: #534AB7; --head-fg: #ffffff;
+    --row-odd: #ffffff; --row-even: #f1efe8; --border: #b4b2a9;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #1f1e1d; --fg: #e8e6dc; --muted: #9c9a92; --line: #9c9a92;
+      --head-bg: #7F77DD; --head-fg: #ffffff;
+      --row-odd: #2c2c2a; --row-even: #262624; --border: #5f5e5a;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #1f1e1d; --fg: #e8e6dc; --muted: #9c9a92; --line: #9c9a92;
+    --head-bg: #7F77DD; --head-fg: #ffffff;
+    --row-odd: #2c2c2a; --row-even: #262624; --border: #5f5e5a;
+  }
+  body { margin: 0; background: var(--bg); color: var(--fg);
+         font-family: system-ui, "Segoe UI", sans-serif; }
+  main { max-width: 1400px; margin: 0 auto; padding: 24px 16px 48px; }
+  h1 { font-size: 22px; font-weight: 500; margin: 0 0 4px; }
+  p.sub { color: var(--muted); margin: 0 0 20px; font-size: 14px; }
+  #erd { overflow-x: auto; background: #ffffff; border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+  #erd svg { max-width: none !important; height: auto; display: block; margin: 0 auto; }
+  .leyenda { color: var(--muted); font-size: 13px; margin-top: 16px; line-height: 1.6; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Esquema de la base de datos Reclone</h1>
+  <p class="sub">Partes de ADN, sintaxis de overhangs y ensamblajes Golden Gate (PostgreSQL) · archivo: db/esquema.sql</p>
+  <div id="erd">Cargando diagrama…</div>
+  <p class="leyenda">
+    Una raya = "uno"; patita de gallo = "muchos". PK = llave primaria, FK = llave foránea, UK = valor único.<br>
+    Las reglas de compatibilidad entre partes vecinas y con el vector las aplica el trigger <code>validar_constructo</code>.
+  </p>
+</main>
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+
+mermaid.initialize({
+  startOnLoad: false,
+  theme: 'base',
+  fontFamily: 'system-ui, "Segoe UI", sans-serif',
+  themeVariables: {
+    darkMode: false,
+    fontFamily: 'system-ui, "Segoe UI", sans-serif',
+    fontSize: '14px',
+    background: '#ffffff',
+    primaryColor: '#CECBF6',
+    primaryTextColor: '#26215C',
+    primaryBorderColor: '#7F77DD',
+    secondaryColor: '#F1EFE8',
+    tertiaryColor: '#ffffff',
+    lineColor: '#5F5E5A',
+    textColor: '#2C2C2A',
+    nodeTextColor: '#26215C',
+    attributeBackgroundColorOdd: '#ffffff',
+    attributeBackgroundColorEven: '#F4F3FD',
+  },
+  er: { useMaxWidth: false },
+});
+
+const fuente = `erDiagram
+  SINTAXIS ||--o{ REGLA_SINTAXIS : define
+  TIPO_PARTE ||--o{ REGLA_SINTAXIS : "tiene regla"
+  REGLA_SINTAXIS ||--o{ PARTE : valida
+  PARTE ||--o{ PLASMIDO : "guardada en"
+  SINTAXIS ||--o{ VECTOR_DESTINO : usa
+  VECTOR_DESTINO ||--o{ CONSTRUCTO : recibe
+  CONSTRUCTO ||--|{ CONSTRUCTO_PARTE : contiene
+  PARTE ||--o{ CONSTRUCTO_PARTE : "se usa en"
+
+  SINTAXIS {
+    serial id PK
+    text nombre UK "Reclone, Taller 1"
+    text enzima "BsaI"
+    text descripcion
+  }
+  TIPO_PARTE {
+    serial id PK
+    text nombre UK "Promotor, RBS, CDS..."
+    text funcion
+  }
+  REGLA_SINTAXIS {
+    int sintaxis_id PK, FK
+    int tipo_parte_id PK, FK
+    smallint orden "posición en la sintaxis"
+    char4 overhang_izq "ej. GGAG"
+    char4 overhang_der "ej. TACT"
+  }
+  PARTE {
+    serial id PK
+    text nombre UK "P1, GFP, T1..."
+    int sintaxis_id FK
+    int tipo_parte_id FK
+    char4 overhang_izq FK
+    char4 overhang_der FK
+    text secuencia "sin GGTCTC ni GAGACC"
+    text descripcion
+    text odc_id UK "ID de Reclone"
+    text bbf_id
+    text coleccion
+    timestamptz creado_en
+  }
+  PLASMIDO {
+    serial id PK
+    text codigo UK "id del stock"
+    int parte_id FK
+    text backbone "pOpen_v3"
+    text resistencia
+    text ubicacion "freezer, caja"
+  }
+  VECTOR_DESTINO {
+    serial id PK
+    text nombre UK
+    int sintaxis_id FK
+    char4 overhang_inicio "GGAG"
+    char4 overhang_fin "CGCT"
+    text resistencia
+  }
+  CONSTRUCTO {
+    serial id PK
+    text nombre UK "GFP_v1"
+    int vector_id FK
+    text estado "diseno, ensamblado..."
+    text notas
+    timestamptz creado_en
+  }
+  CONSTRUCTO_PARTE {
+    int constructo_id PK, FK
+    smallint posicion PK "1..N"
+    int parte_id FK
+  }`;
+
+const { svg } = await mermaid.render('erd-svg', fuente);
+const cont = document.getElementById('erd');
+cont.innerHTML = svg;
+
+</script>
+</body>
+</html>

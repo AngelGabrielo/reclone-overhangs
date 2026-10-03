@@ -1,0 +1,19 @@
+# Entorno y base de datos locales (propios de cada equipo)
+.venv/
+.pg/
+.env
+
+# Archivos temporales
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Configuracion local de herramientas
+.claude/
+
+# Material de terceros que no se redistribuye:
+# - copia de las placas de Reclone (el repositorio original no declara licencia
+#   para sus datos); `python -m reclone importar-reclone` las descarga solas
+# - documento del taller (material de curso)
+datos/reclone/
+*.docx

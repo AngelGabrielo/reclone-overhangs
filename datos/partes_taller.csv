@@ -1,0 +1,14 @@
+nombre,tipo,sintaxis,overhang_izq,overhang_der,secuencia,descripcion
+P1,Promotor,Taller 1,GGAG,TACT,,Promotor 1 de la tabla del taller
+P2,Promotor,Taller 1,GGAG,TACT,,Promotor 2 de la tabla del taller
+R1,RBS,Taller 1,TACT,CCAT,,RBS 1 de la tabla del taller
+R2,RBS,Taller 1,TACT,CCAT,,RBS 2 de la tabla del taller
+GFP,CDS,Taller 1,CCAT,AGGT,,Proteína fluorescente verde
+RFP,CDS,Taller 1,CCAT,AGGT,,Proteína fluorescente roja
+LacZ,CDS,Taller 1,CCAT,AGGT,,Beta-galactosidasa
+T1,Terminador,Taller 1,AGGT,CGCT,,Terminador 1 de la tabla del taller
+T2,Terminador,Taller 1,AGGT,CGCT,,Terminador 2 de la tabla del taller
+Promotor_GG,Promotor,Taller 1 - Golden Gate,GGAG,TACT,TTGACGGCTAGCTCAGTCCTAGGCAGTGCTAGC,Promotor del ejercicio Golden Gate
+RBS_GG,RBS,Taller 1 - Golden Gate,TACT,AATG,AAAGAGGAGAAA,RBS del ejercicio Golden Gate
+CDS_GG,CDS,Taller 1 - Golden Gate,AATG,GCTT,GCTTTTCCGGATGCATTCCGCATTCCGTGAGGAATGCATTCCG,CDS del ejercicio Golden Gate
+Terminador_GG,Terminador,Taller 1 - Golden Gate,GCTT,CGCT,CCCGCCGAAAGGCGGGTTTTTT,Terminador del ejercicio Golden Gate

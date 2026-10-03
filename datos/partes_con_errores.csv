@@ -1,0 +1,9 @@
+nombre,tipo,sintaxis,overhang_izq,overhang_der,secuencia,descripcion
+P3,Promotor,Taller 1,GGAG,TACT,TTGACAATTAATCATCGGCTCG,Correcta: se importaría si no hubiera errores
+P4,Promotor,Taller 1,AGGT,CGCT,,Error: overhangs de terminador en un promotor
+GFP_mut,CDS,Taller 1,CCAT,AGGT,ATGGGTCTCAAA,Error: sitio BsaI interno (GGTCTC)
+R3,RBS,Taller 1,TACT,CCAT,AAAGXGGAG,Error: base inválida (X)
+T3,Terminador,Taller X,AGGT,CGCT,,Error: sintaxis inexistente
+Y1,Operador,Taller 1,GGAG,TACT,,Error: tipo de parte inexistente
+P1,Promotor,Taller 1,GGAG,TACT,,Error: ya existe una parte llamada P1
+P3,Promotor,Taller 1,GGAG,TACT,,Error: nombre repetido dentro del archivo
