@@ -10,6 +10,7 @@ from __future__ import annotations
 import glob
 import shutil
 import subprocess
+import sys
 from pathlib import Path
 
 import psycopg
@@ -31,10 +32,17 @@ def _bin(programa: str) -> str:
         f"No encontré '{programa}'. Instala PostgreSQL o define PG_BIN en el archivo .env")
 
 
-def _ejecutar(*args: str) -> int:
+def _ejecutar(*args: str, desligado: bool = False) -> int:
     # Sin capturar la salida: en Windows, postgres hereda los pipes y
     # subprocess se quedaría esperando a que se cierren.
-    return subprocess.call(list(args), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    # desligado: el proceso vive en su propia consola oculta. Si no, postgres
+    # comparte la ventana de quien lo arrancó y Windows lo mata de golpe (sin
+    # apagado ordenado) cuando esa ventana se cierra o se pulsa Ctrl+C.
+    banderas = 0
+    if desligado and sys.platform == "win32":
+        banderas = subprocess.CREATE_NO_WINDOW | subprocess.CREATE_NEW_PROCESS_GROUP
+    return subprocess.call(list(args), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                           creationflags=banderas)
 
 
 def inicializado() -> bool:
@@ -65,7 +73,7 @@ def iniciar() -> None:
     config.PG_LOG.parent.mkdir(parents=True, exist_ok=True)
     opciones = f"-p {config.PG_PUERTO} -c listen_addresses=127.0.0.1"
     codigo = _ejecutar(_bin("pg_ctl"), "start", "-w", "-D", str(config.PG_DATOS),
-                       "-l", str(config.PG_LOG), "-o", opciones)
+                       "-l", str(config.PG_LOG), "-o", opciones, desligado=True)
     if codigo != 0:
         raise RuntimeError(f"No se pudo iniciar PostgreSQL; revisa {config.PG_LOG}")
     crear_base()

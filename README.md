@@ -72,23 +72,30 @@ python -m venv .venv
 
 ### Cada día
 
-Haz doble clic en **`iniciar.bat`**. Arranca PostgreSQL, abre la aplicación en
-http://127.0.0.1:8501 y deja la ventana abierta mientras la uses. Para terminar,
-cierra esa ventana. Para apagar también la base de datos:
+Haz doble clic en **`iniciar.bat`**. Arranca PostgreSQL y la aplicación, abre
+http://127.0.0.1:8501 en el navegador y deja abierta una ventana negra.
 
-```bash
-.venv\Scripts\python -m reclone db detener
-```
+**Para terminar**, cualquiera de estas tres formas apaga *todo* (la aplicación
+y la base de datos, de forma ordenada):
+
+- cerrar esa ventana negra con la X;
+- pulsar `Ctrl+C` en ella;
+- el botón **⏻ Apagar todo** del menú lateral de la aplicación.
+
+Cerrar solo la pestaña del navegador **no** apaga nada: la ventana negra sigue
+abierta mientras el programa corre.
 
 Si prefieres hacerlo a mano en vez de con el `.bat`:
 
 ```bash
-.venv\Scripts\python -m reclone db iniciar
-.venv\Scripts\python -m streamlit run app.py
+.venv\Scripts\python -m reclone app
 ```
 
-Si abres la aplicación y PostgreSQL no está corriendo, aparece un botón
-**Iniciar servidor local**.
+(`python -m reclone db iniciar` / `db detener` quedan para manejar solo la base
+de datos, por ejemplo para ejecutar comandos de la terminal.)
+
+Si abres la aplicación por otra vía y PostgreSQL no está corriendo, aparece un
+botón **Iniciar servidor local**.
 
 ### Si algo falla
 
@@ -97,9 +104,9 @@ Si abres la aplicación y PostgreSQL no está corriendo, aparece un botón
 | `pip` falla con `CERTIFICATE_VERIFY_FAILED` | Un antivirus (p. ej. Avast) intercepta el tráfico seguro. Instala con `pip install --use-feature=truststore -r requirements.txt` (usa los certificados de Windows, sin desactivar la verificación). |
 | `No encontré 'pg_ctl'` / `initdb` | PostgreSQL no está en la ruta habitual. Copia `.env.example` a `.env` y define `PG_BIN` con su carpeta `bin` (p. ej. `C:\Program Files\PostgreSQL\16\bin`). |
 | "No hay conexión con PostgreSQL" | El servidor está apagado: `python -m reclone db iniciar` o el botón de la aplicación. |
-| Puerto 5433 u 8501 ocupado | Cambia `PG_PUERTO` en `.env`, o usa `streamlit run app.py --server.port 8502`. |
+| Puerto 5433 u 8501 ocupado | Si dice que el 8501 está en uso, hay otra copia abierta: ciérrala. Para cambiar de puerto define `APP_PUERTO` o `PG_PUERTO` en `.env`. |
 | Cambié código y la aplicación se comporta raro | Streamlit conserva módulos viejos en memoria: cierra y vuelve a abrir `iniciar.bat`. |
-| Se apagó el equipo con la base abierta | Normal. Vuelve a ejecutar `db iniciar`; PostgreSQL se recupera solo. |
+| Se apagó el equipo con la base abierta | Normal. Vuelve a abrir `iniciar.bat`; PostgreSQL se recupera sola (probado). |
 
 ### Copias de seguridad
 

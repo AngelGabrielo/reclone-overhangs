@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import html
+import os
 import random
+import time
 from pathlib import Path
 
 import pandas as pd
@@ -60,6 +62,18 @@ def secuencia_html(segmentos: list[tuple[str, str]]) -> str:
     return ('<div style="font-family:Consolas,monospace;font-size:14px;line-height:1.9;'
             'word-break:break-all">' + "".join(trozos) + "</div>")
 
+
+# ---------------------------------------------------------------------------
+# Apagar todo (solo si se arrancó con iniciar.bat / `python -m reclone app`)
+# ---------------------------------------------------------------------------
+
+if os.getenv("RECLONE_LANZADOR"):
+    with st.sidebar:
+        if st.button("⏻ Apagar todo", width="stretch", key="apagar_todo",
+                     help="Cierra la aplicación y apaga la base de datos local"):
+            st.warning("Apagando… ya puedes cerrar esta pestaña.")
+            time.sleep(0.5)
+            os._exit(0)  # el lanzador detecta que la app terminó y apaga PostgreSQL
 
 # ---------------------------------------------------------------------------
 # Conexión

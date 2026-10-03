@@ -16,6 +16,9 @@ PG_DATOS = Path(os.getenv("PG_DATOS", RAIZ / ".pg" / "datos"))
 PG_LOG = Path(os.getenv("PG_LOG", RAIZ / ".pg" / "postgres.log"))
 PG_BIN = os.getenv("PG_BIN", "")  # vacío = autodetectar
 
+# Puerto de la aplicación web
+APP_PUERTO = int(os.getenv("APP_PUERTO", "8501"))
+
 # Si se define, se usa este servidor en lugar del local (p. ej. uno compartido).
 DATABASE_URL = os.getenv(
     "DATABASE_URL",

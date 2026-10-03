@@ -7,7 +7,7 @@ import sys
 
 import pandas as pd
 
-from . import adn, config, importador, reclone_org, repositorio, servidor_local
+from . import adn, config, importador, lanzador, reclone_org, repositorio, servidor_local
 from .repositorio import ErrorValidacion
 
 
@@ -22,6 +22,10 @@ def cmd_db(args) -> None:
         estado = "corriendo" if servidor_local.corriendo() else "detenido"
         print(f"Servidor local: {estado} · datos en {config.PG_DATOS}")
         print(f"Conexión: {config.DATABASE_URL}")
+
+
+def cmd_app(args) -> None:
+    sys.exit(lanzador.ejecutar(abrir_navegador=not args.sin_navegador))
 
 
 def cmd_esquema(args) -> None:
@@ -148,6 +152,10 @@ def main(argv: list[str] | None = None) -> None:
     s = sub.add_parser("db", help="servidor PostgreSQL local del proyecto")
     s.add_argument("accion", choices=["iniciar", "detener", "estado"])
     s.set_defaults(func=cmd_db)
+
+    s = sub.add_parser("app", help="arranca la base de datos y la aplicación; las apaga al cerrar")
+    s.add_argument("--sin-navegador", action="store_true", help="no abrir el navegador")
+    s.set_defaults(func=cmd_app)
 
     s = sub.add_parser("esquema", help="crear tablas y catálogo")
     s.add_argument("--reiniciar", action="store_true", help="BORRA todos los datos y recrea")
